@@ -11,27 +11,26 @@ pipeline {
       steps {
         script {
           // Build the Docker image
-          docker.image.build("-t esmailshaikh1055/jenkins .")
-       }
+          docker.image('esmailshaikh1055/jenkins').build()
+        }
       }
     }
-       stage('Login') {
-  steps {
-    // Login to Docker Hub
-    script {
-      docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
-        // Login using credentials
-        echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+    stage('Login') {
+      steps {
+        // Login to Docker Hub
+        script {
+          docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
+            // Login using credentials
+            docker.image('esmailshaikh1055/jenkins').push()
+          }
+        }
       }
     }
-  }
-}
-
     stage('Push') {
       steps {
         // Push Docker image to Docker Hub
         script {
-          docker image push esmailshaikh1055/jenkins
+          docker.image('esmailshaikh1055/jenkins').push()
         }
       }
     }
@@ -39,7 +38,7 @@ pipeline {
       steps {
         // Run the Docker container
         script {
-          docker.container("run -itd -p 86:80 --name mycontainer esmailshaikh1055/jenkins")
+          docker.container('mycontainer').withRun('-itd -p 86:80 esmailshaikh1055/jenkins')
         }
       }
     }
@@ -48,7 +47,7 @@ pipeline {
     always {
       // Logout from Docker
       script {
-        docker logout
+        docker.image('esmailshaikh1055/jenkins').registry().credentialsId(DOCKERHUB_CREDENTIALS).logout()
       }
     }
   }
