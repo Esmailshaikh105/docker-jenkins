@@ -11,7 +11,7 @@ pipeline {
       steps {
         script {
           // Build the Docker image
-          docker image build -t esmailshaikh1055/jenkins .
+          docker.image.build("-t esmailshaikh1055/jenkins .")
        }
       }
     }
