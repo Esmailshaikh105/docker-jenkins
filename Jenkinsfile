@@ -39,7 +39,7 @@ pipeline {
       steps {
         // Run the Docker container
         script {
-          docker container run -itd -p 86:80 --name mycontainer esmailshaikh1055/jenkins
+          docker.container("run -itd -p 86:80 --name mycontainer esmailshaikh1055/jenkins")
         }
       }
     }
